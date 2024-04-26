@@ -1,5 +1,4 @@
 import {
-	MouseEventHandler,
 	useCallback,
 	useEffect,
 	useRef,

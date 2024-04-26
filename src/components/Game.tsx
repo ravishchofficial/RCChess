@@ -139,7 +139,7 @@ const Game = () => {
 		}
 	};
 
-	const mouseOutHandler = (evt: any) => {
+	const mouseOutHandler = () => {
 		if (dropzoneHighlightRef.current) {
 			dropzoneHighlightRef.current.style.display = "none";
 		}
@@ -230,7 +230,6 @@ const Game = () => {
 		} else if (Math.abs(piece) === PiecesType.Pawn) {
 			return (
 				<Pawn
-					size={BOARD_DIMENSIONS * BOX_SIZE}
 					color={piece < 0 ? COLORS.BLACK : COLORS.WHITE}
 					stroke={piece > 0 ? COLORS.BLACK : COLORS.WHITE}
 				/>

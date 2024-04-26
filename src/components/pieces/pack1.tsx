@@ -1,10 +1,9 @@
 interface Props {
 	color?: string;
-	size?: number;
 	stroke?: string;
 }
 
-export const King = ({ size, color, stroke }: Props) => {
+export const King = ({ color, stroke }: Props) => {
 	return (
 		<svg
 			width="72"
@@ -29,7 +28,7 @@ export const King = ({ size, color, stroke }: Props) => {
 	);
 };
 
-export const Queen = ({ size, color, stroke }: Props) => {
+export const Queen = ({ color, stroke }: Props) => {
 	return (
 		<svg
 			width="72"
@@ -50,7 +49,7 @@ export const Queen = ({ size, color, stroke }: Props) => {
 	);
 };
 
-export const Rook = ({ size, color, stroke }: Props) => {
+export const Rook = ({ color, stroke }: Props) => {
 	return (
 		<svg
 			width="72"
@@ -75,7 +74,7 @@ export const Rook = ({ size, color, stroke }: Props) => {
 	);
 };
 
-export const Knight = ({ size, color, stroke }: Props) => {
+export const Knight = ({ color, stroke }: Props) => {
 	return (
 		<svg
 			width="72"
@@ -99,7 +98,7 @@ export const Knight = ({ size, color, stroke }: Props) => {
 	);
 };
 
-export const Bishop = ({ size, color, stroke }: Props) => {
+export const Bishop = ({ color, stroke }: Props) => {
 	return (
 		<svg
 			width="72"
@@ -120,7 +119,7 @@ export const Bishop = ({ size, color, stroke }: Props) => {
 	);
 };
 
-export const Pawn = ({ size, color, stroke }: Props) => {
+export const Pawn = ({ color, stroke }: Props) => {
 	return (
 		<svg
 			width="72"

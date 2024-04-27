@@ -5,6 +5,7 @@ import {
 	BOX_SIZE,
 	COLORS,
 	INITIAL_BOARD,
+	Packs,
 	Pieces as PiecesType,
 	Turn,
 } from "../common/constants";
@@ -17,7 +18,6 @@ import {
 	calculateRookMove,
 	getBoard,
 	getPointerPosition,
-	getPiecesFromPack,
 } from "../common/helpers";
 
 const Game = () => {
@@ -33,7 +33,9 @@ const Game = () => {
 	const [validMoves, setValidMoves] = useState<number[][]>([]);
 	const [currTurn, setCurrTurn] = useState(Turn.White);
 	const [blackFirstDisplay, setBlackFirstDisplay] = useState(false);
-	const [selectedIconsPack, setSelectedIconsPack] = useState<'pack1' | 'pack2'>('pack1');
+	const [selectedIconsPack, setSelectedIconsPack] = useState<
+		"pack1" | "pack2"
+	>("pack1");
 
 	useEffect(() => {
 		// Install event handlers
@@ -201,8 +203,8 @@ const Game = () => {
 			BlackKnight,
 			BlackBishop,
 			BlackPawn,
-		} = getPiecesFromPack(selectedIconsPack);
-		
+		} = Packs[selectedIconsPack];
+
 		if (Math.abs(piece) === PiecesType.King) {
 			return piece > 0 ? <WhiteKing /> : <BlackKing />;
 		} else if (Math.abs(piece) === PiecesType.Queen) {
@@ -236,8 +238,9 @@ const Game = () => {
 							selected={isSelected}
 							dragging={isSelected && isDragging}
 							onMouseDown={(evt: any) => {
-								if (evt.button === 0) { // detecting left mouse click
-									handlePieceClick(rowIdx, colIdx)
+								if (evt.button === 0) {
+									// detecting left mouse click
+									handlePieceClick(rowIdx, colIdx);
 								}
 							}}
 							onMouseOver={mouseOverHandler}
@@ -278,22 +281,24 @@ const Game = () => {
 
 	return (
 		<Wrapper>
-			<Board
-				ref={boardRef}
-				onMouseMove={onDragHandler}
-				onMouseUp={mouseOutHandler}
-				dragging={isDragging}
-			>
-				<HorizontalLabels reverse={blackFirstDisplay} />
-				<VerticalLabels reverse={blackFirstDisplay} />
-				<Grid />
-				<Pieces />
-				<ValidMoveMarker />
-				<DropzoneHighlight
-					ref={dropzoneHighlightRef}
-					data-selection-attr={"dropzone-highlight"}
-				/>
-			</Board>
+			<BoardWrapper>
+				<Board
+					ref={boardRef}
+					onMouseMove={onDragHandler}
+					onMouseUp={mouseOutHandler}
+					dragging={isDragging}
+				>
+					<HorizontalLabels reverse={blackFirstDisplay} />
+					<VerticalLabels reverse={blackFirstDisplay} />
+					<Grid />
+					<Pieces />
+					<ValidMoveMarker />
+					<DropzoneHighlight
+						ref={dropzoneHighlightRef}
+						data-selection-attr={"dropzone-highlight"}
+					/>
+				</Board>
+			</BoardWrapper>
 			<Label>
 				Current turn: <span>{currTurn}</span>
 				<br />
@@ -304,8 +309,8 @@ const Game = () => {
 						setBlackFirstDisplay(evt.target.checked);
 						setBoard(getBoard(board, true));
 					}}
-				/>&nbsp;&nbsp;
-				Flip Board
+				/>
+				&nbsp;&nbsp; Flip Board
 				<br />
 				<br />
 				<div>
@@ -316,19 +321,21 @@ const Game = () => {
 						id="pack1"
 						name="pack"
 						value="pack1"
-						checked={selectedIconsPack === 'pack1'}
-						onChange={() => setSelectedIconsPack('pack1')}
-					/>&nbsp;&nbsp;
+						checked={selectedIconsPack === "pack1"}
+						onChange={() => setSelectedIconsPack("pack1")}
+					/>
+					&nbsp;&nbsp;
 					<label htmlFor="pack1">Pack 1</label>
-					<br/>
+					<br />
 					<input
 						type="radio"
 						id="pack2"
 						name="pack"
 						value="pack2"
-						checked={selectedIconsPack === 'pack2'}
-						onChange={() => setSelectedIconsPack('pack2')}
-					/>&nbsp;&nbsp;
+						checked={selectedIconsPack === "pack2"}
+						onChange={() => setSelectedIconsPack("pack2")}
+					/>
+					&nbsp;&nbsp;
 					<label htmlFor="pack2">Pack 2</label>
 				</div>
 			</Label>
@@ -424,6 +431,13 @@ const Wrapper = styled.div`
 	font-size: 24px;
 `;
 
+const BoardWrapper = styled.div`
+	width: ${BOARD_DIMENSIONS}px;
+	height: ${BOARD_DIMENSIONS}px;
+	border-radius: 8px;
+	border: 8px solid #fff;
+`;
+
 const Board = styled.div<{ dragging: boolean }>`
 	display: grid;
 	grid-template-columns: repeat(8, 1fr);
@@ -485,7 +499,7 @@ const Marker = styled.div<{ selected: boolean }>`
 const Move = styled.div`
 	width: 30%;
 	height: 30%;
-	background-color: #58545424;
+	background-color: ${COLORS.MARKER};
 	border-radius: 50%;
 	pointer-events: none;
 	box-sizing: border-box;
@@ -495,7 +509,7 @@ const Capture = styled.div`
 	width: 100%;
 	height: 100%;
 	background-color: transparent;
-	border: 10px solid #58545424;
+	border: 10px solid ${COLORS.MARKER};
 	border-radius: 50%;
 	pointer-events: none;
 	box-sizing: border-box;

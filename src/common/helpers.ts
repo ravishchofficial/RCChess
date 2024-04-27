@@ -1,15 +1,3 @@
-import Pack1 from '../components/pieces/pack1';
-import Pack2 from '../components/pieces/pack2';
-
-export const getPiecesFromPack = (pack: 'pack1' | 'pack2') => {
-	const Packs = {
-		pack1: Pack1,
-		pack2: Pack2,
-	}
-
-	return Packs[pack];
-};
-
 export const getPointerPosition = (evt: any, boundingBox: DOMRect) => {
 	const x = evt.clientX - boundingBox.x;
 	const y = evt.clientY - boundingBox.y;

@@ -1,3 +1,11 @@
+import Pack1 from "../components/pieces/pack1";
+import Pack2 from "../components/pieces/pack2";
+
+export const Packs = {
+	pack1: Pack1,
+	pack2: Pack2,
+};
+
 export enum Pieces {
 	King = 6,
 	Queen = 5,
@@ -64,13 +72,20 @@ export const BOARD_DIMENSIONS = 1000;
 export enum COLORS {
 	DARK = "#769656",
 	LIGHT = "#eeeed2",
-	WHITE = "#F4F7FA",
-	BLACK = "#34364C",
 	SELECTION = "#baca44",
 	DROPZONE = "#e0e0e0",
+	MARKER = "#58545424",
 }
 
+// export enum COLORS {
+// 	DARK = "#B7C0D8",
+// 	LIGHT = "#E8EDF9",
+// 	SELECTION = "#7B61FF",
+// 	DROPZONE = "#e0e0e0",
+// 	MARKER = "#7B61FF",
+// }
+
 export enum Turn {
-	White = 'white',
-	Black = 'black',
+	White = "white",
+	Black = "black",
 }

@@ -235,7 +235,11 @@ const Game = () => {
 							ref={isSelected && isDragging ? currPieceRef : null}
 							selected={isSelected}
 							dragging={isSelected && isDragging}
-							onMouseDown={() => handlePieceClick(rowIdx, colIdx)}
+							onMouseDown={(evt: any) => {
+								if (evt.button === 0) { // detecting left mouse click
+									handlePieceClick(rowIdx, colIdx)
+								}
+							}}
 							onMouseOver={mouseOverHandler}
 							onMouseOut={mouseOutHandler}
 						>

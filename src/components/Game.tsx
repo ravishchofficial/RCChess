@@ -1,9 +1,4 @@
-import {
-	useCallback,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import {
 	BOARD_DIMENSIONS,
@@ -13,7 +8,6 @@ import {
 	Pieces as PiecesType,
 	Turn,
 } from "../common/constants";
-import { Bishop, King, Knight, Pawn, Queen, Rook } from "./pieces/pack1";
 import {
 	calculateBishopMove,
 	calculateKingMove,
@@ -23,6 +17,7 @@ import {
 	calculateRookMove,
 	getBoard,
 	getPointerPosition,
+	getPiecesFromPack,
 } from "../common/helpers";
 
 const Game = () => {
@@ -38,6 +33,7 @@ const Game = () => {
 	const [validMoves, setValidMoves] = useState<number[][]>([]);
 	const [currTurn, setCurrTurn] = useState(Turn.White);
 	const [blackFirstDisplay, setBlackFirstDisplay] = useState(false);
+	const [selectedIconsPack, setSelectedIconsPack] = useState<'pack1' | 'pack2'>('pack1');
 
 	useEffect(() => {
 		// Install event handlers
@@ -192,48 +188,33 @@ const Game = () => {
 	};
 
 	const PieceIcon = ({ piece }: { piece: PiecesType }) => {
+		const {
+			WhiteKing,
+			WhiteQueen,
+			WhiteRook,
+			WhiteKnight,
+			WhiteBishop,
+			WhitePawn,
+			BlackKing,
+			BlackQueen,
+			BlackRook,
+			BlackKnight,
+			BlackBishop,
+			BlackPawn,
+		} = getPiecesFromPack(selectedIconsPack);
+		
 		if (Math.abs(piece) === PiecesType.King) {
-			return (
-				<King
-					color={piece < 0 ? COLORS.BLACK : COLORS.WHITE}
-					stroke={piece > 0 ? COLORS.BLACK : COLORS.WHITE}
-				/>
-			);
+			return piece > 0 ? <WhiteKing /> : <BlackKing />;
 		} else if (Math.abs(piece) === PiecesType.Queen) {
-			return (
-				<Queen
-					color={piece < 0 ? COLORS.BLACK : COLORS.WHITE}
-					stroke={piece > 0 ? COLORS.BLACK : COLORS.WHITE}
-				/>
-			);
+			return piece > 0 ? <WhiteQueen /> : <BlackQueen />;
 		} else if (Math.abs(piece) === PiecesType.Rook) {
-			return (
-				<Rook
-					color={piece < 0 ? COLORS.BLACK : COLORS.WHITE}
-					stroke={piece > 0 ? COLORS.BLACK : COLORS.WHITE}
-				/>
-			);
+			return piece > 0 ? <WhiteRook /> : <BlackRook />;
 		} else if (Math.abs(piece) === PiecesType.Knight) {
-			return (
-				<Knight
-					color={piece < 0 ? COLORS.BLACK : COLORS.WHITE}
-					stroke={piece > 0 ? COLORS.BLACK : COLORS.WHITE}
-				/>
-			);
+			return piece > 0 ? <WhiteKnight /> : <BlackKnight />;
 		} else if (Math.abs(piece) === PiecesType.Bishop) {
-			return (
-				<Bishop
-					color={piece < 0 ? COLORS.BLACK : COLORS.WHITE}
-					stroke={piece > 0 ? COLORS.BLACK : COLORS.WHITE}
-				/>
-			);
+			return piece > 0 ? <WhiteBishop /> : <BlackBishop />;
 		} else if (Math.abs(piece) === PiecesType.Pawn) {
-			return (
-				<Pawn
-					color={piece < 0 ? COLORS.BLACK : COLORS.WHITE}
-					stroke={piece > 0 ? COLORS.BLACK : COLORS.WHITE}
-				/>
-			);
+			return piece > 0 ? <WhitePawn /> : <BlackPawn />;
 		}
 	};
 
@@ -312,7 +293,6 @@ const Game = () => {
 			<Label>
 				Current turn: <span>{currTurn}</span>
 				<br />
-				Black first:{" "}
 				<input
 					type="checkbox"
 					checked={blackFirstDisplay}
@@ -320,7 +300,33 @@ const Game = () => {
 						setBlackFirstDisplay(evt.target.checked);
 						setBoard(getBoard(board, true));
 					}}
-				/>
+				/>&nbsp;&nbsp;
+				Flip Board
+				<br />
+				<br />
+				<div>
+					Pieces
+					<br />
+					<input
+						type="radio"
+						id="pack1"
+						name="pack"
+						value="pack1"
+						checked={selectedIconsPack === 'pack1'}
+						onChange={() => setSelectedIconsPack('pack1')}
+					/>&nbsp;&nbsp;
+					<label htmlFor="pack1">Pack 1</label>
+					<br/>
+					<input
+						type="radio"
+						id="pack2"
+						name="pack"
+						value="pack2"
+						checked={selectedIconsPack === 'pack2'}
+						onChange={() => setSelectedIconsPack('pack2')}
+					/>&nbsp;&nbsp;
+					<label htmlFor="pack2">Pack 2</label>
+				</div>
 			</Label>
 		</Wrapper>
 	);
@@ -330,7 +336,7 @@ const HorizontalLabels = ({ reverse }: { reverse: boolean }) => {
 	return (
 		<HorizontalWrapper>
 			{Array.from({ length: 8 }).map((_, idx) => (
-				<div key={idx}>
+				<div key={idx} className={idx % 2 === 0 ? "light" : "dark"}>
 					{String.fromCharCode(reverse ? 97 + 7 - idx : 97 + idx)}
 				</div>
 			))}
@@ -342,7 +348,9 @@ const VerticalLabels = ({ reverse }: { reverse: boolean }) => {
 	return (
 		<VerticalWrapper>
 			{Array.from({ length: 8 }).map((_, idx) => (
-				<div key={idx}>{reverse ? 8 - idx : idx + 1}</div>
+				<div key={idx} className={idx % 2 === 0 ? "light" : "dark"}>
+					{reverse ? 8 - idx : idx + 1}
+				</div>
 			))}
 		</VerticalWrapper>
 	);
@@ -350,36 +358,55 @@ const VerticalLabels = ({ reverse }: { reverse: boolean }) => {
 
 const HorizontalWrapper = styled.div`
 	position: absolute;
-	bottom: -50px;
+	bottom: 0;
 	left: 0;
 	display: flex;
 	width: ${BOARD_DIMENSIONS}px;
-	height: 50px;
+	height: 30px;
+	user-select: none;
 
 	& div {
 		width: ${BOX_SIZE * BOARD_DIMENSIONS}px;
 		display: flex;
-		justify-content: flex-start;
+		justify-content: flex-end;
 		align-items: center;
-		padding: 0 10px;
+		padding: 0 6px 6px 0;
+		font-weight: bold;
+
+		&.light {
+			color: ${COLORS.LIGHT};
+		}
+
+		&.dark {
+			color: ${COLORS.DARK};
+		}
 	}
 `;
 
 const VerticalWrapper = styled.div`
 	position: absolute;
 	top: 0;
-	left: -50px;
-	width: 50px;
+	left: 0;
+	width: 30px;
 	height: ${BOARD_DIMENSIONS}px;
 	display: flex;
 	flex-direction: column-reverse;
+	user-select: none;
 
 	& div {
 		height: ${BOARD_DIMENSIONS * BOX_SIZE}px;
 		display: flex;
 		justify-content: center;
-		align-items: end;
-		padding: 10px 0;
+		align-items: start;
+		font-weight: bold;
+
+		&.light {
+			color: ${COLORS.LIGHT};
+		}
+
+		&.dark {
+			color: ${COLORS.DARK};
+		}
 	}
 `;
 
@@ -438,10 +465,6 @@ const PieceContainer = styled.div<{ selected: boolean; dragging: boolean }>`
 		pointer-events: none;
 		width: 80%;
 		height: 80%;
-
-		& path {
-			stroke: black;
-		}
 	}
 `;
 
